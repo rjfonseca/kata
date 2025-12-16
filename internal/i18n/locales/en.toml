@@ -1,0 +1,120 @@
+# Command-Line Interface messages (global usage, flags)
+[cli]
+usage = "Create and run code katas"
+flag_lang_usage = "Language for messages (e.g. en-US, pt-BR)"
+flag_verbose_usage = "Enable verbose (debug) logging"
+flag_quiet_usage = "Suppress informational logs"
+flag_interactive_usage = "Enable interactive mode (loop)"
+
+# --- Config Command ---
+[config]
+usage = "Manage kata configuration"
+flag_set_lang_usage = "Set global language (e.g. pt-BR)"
+log_lang_updated = "Language updated"
+
+# --- Init Command ---
+[init]
+usage = "Initialize a new kata repository"
+log_creating_dir = "Creating katas directory"
+log_copying_catalog = "Copying embedded catalog"
+log_copying_scaffold = "Copying embedded scaffold"
+log_copying_runners = "Copying embedded runners"
+log_copying_i18n = "Copying embedded i18n files"
+log_creating_config = "Creating workspace configuration (kata.toml)"
+log_repo_initialized = "Kata repository initialized"
+error_dir_exists = "Katas directory already exists"
+
+# --- Start Command ---
+[start]
+usage = "Start a kata"
+args_usage = "<kata-name>"
+prompt_select_kata = "Choose a kata to start"
+log_no_katas_found = "No katas found in catalog."
+flag_force_usage = "Overwrite existing kata state"
+flag_dir_usage = "Directory to start the kata in"
+flag_runner_usage = "Override the default runner"
+log_runner_override = "Overriding runner configuration"
+error_kata_already_started = "A kata has already been started. Use --force to overwrite."
+error_list_katas = "failed to list katas"
+error_select_kata = "failed to select kata"
+error_copy_failed = "Failed to copy kata '%s' to .kata"
+error_read_steps_failed = "Failed to read steps for kata '%s'"
+error_no_steps = "Kata '%s' has no steps"
+error_read_config_failed = "Failed to read config.toml for kata '%s'"
+error_copy_runner_failed = "Failed to copy runner '%s' to project root"
+error_scaffold_failed = "Failed to apply scaffold for kata '%s'"
+log_using_local_catalog = "Using local kata catalog"
+log_using_embedded_catalog = "Using embedded kata catalog"
+log_runner_selected = "Kata runner selected"
+log_using_local_runner = "Using local runner"
+log_using_embedded_runner = "Using embedded runner"
+log_scaffold_applied = "Applying kata scaffold"
+log_kata_started = "Kata started successfully"
+error_hook_on_kata_start_failed = "Hook 'on_kata_start' failed"
+
+# --- Run Command ---
+[run]
+usage = "Run the kata tests"
+error_read_cwd = "reading working directory"
+error_create_executor = "creating task executor"
+error_run_task = "running task 'test'"
+flag_watch_usage = "Watch for changes and re-run tests"
+error_hook_before_run_failed = "Hook 'before_run' failed"
+log_hook_on_run_success_failed = "Hook 'on_run_success' failed"
+log_hook_on_run_fail_failed = "Hook 'on_run_fail' failed"
+log_hook_on_run_failed = "Hook 'on_run' failed"
+
+# --- Next Command ---
+[next]
+usage = "Advance the kata to the next step"
+error_not_started = "No kata started. Run 'kata start <name>' first."
+error_tests_failing = "Tests are failing. Make them pass before advancing."
+error_no_next_step = "There are no more steps in this kata."
+error_apply_step = "Failed to apply step '%s'"
+log_advancing = "Advancing to next step"
+log_completed = "Kata completed! 🎉"
+log_already_completed = "Kata already completed! You can keep refactoring and learning."
+log_hook_on_kata_finish_failed = "Hook 'on_kata_finish' failed"
+
+# --- Task Command ---
+[task]
+usage = "Run or list arbitrary tasks"
+log_no_tasks = "No tasks available."
+error_init_runner = "failed to initialize task runner"
+error_list_tasks = "failed to list tasks"
+
+# --- Copier ---
+[copier]
+error_overwrite = "Refusing to overwrite user-managed file"
+error_modified = "File modified by user"
+# --- Completion Command ---
+[completion]
+usage = "Generate shell completion script"
+args_usage = "[bash|zsh|fish]"
+
+# --- List Command ---
+[list]
+usage = "List available katas"
+error_fetch = "failed to list katas"
+
+# --- Status Command ---
+[status]
+usage = "Show the current kata status"
+error_read_state = "Failed to read kata state (is a kata started?)"
+field_kata = "Kata"
+field_step = "Step"
+field_passing = "Tests Passing"
+field_completed = "Completed"
+value_yes = "Yes"
+value_no = "No"
+
+# --- Reset Command ---
+[reset]
+usage = "Reset the current step or the entire kata"
+flag_hard_usage = "Reset to the beginning of the kata (scaffold)"
+flag_to_step_usage = "Reset to the beginning of a specific step"
+log_safety_backup = "Safety backup created at %s"
+log_restoring = "Restoring checkpoint: %s"
+log_reset_complete = "Reset complete. Current step: %s"
+error_checkpoint_not_found = "Checkpoint for step '%s' not found. You might need to advance once to create it."
+error_invalid_step = "Invalid step index"
