@@ -1,0 +1,7 @@
+services:
+  hurl:
+    image: ghcr.io/orange-opensource/hurl:latest
+    working_dir: /tests
+    volumes:
+      - ./acceptance_tests:/tests:ro
+    entrypoint: ["tail", "-f", "/dev/null"]
