@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  test:
+    desc: Runs Python doctests
+    cmds:
+      - PYTHONPATH=src python3 -m doctest -v src/*_test.py
