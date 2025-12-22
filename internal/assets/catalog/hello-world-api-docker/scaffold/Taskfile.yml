@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+includes:
+  testrunner:
+    taskfile: Taskfile.testrunner.yml
+
+tasks:
+  test:
+    internal: true
+    silent: true
+    cmds:
+      - task: testrunner:test

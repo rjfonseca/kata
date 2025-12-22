@@ -1,0 +1,11 @@
+version: "3"
+
+includes:
+  testrunner: ./Taskfile.testrunner.yml
+
+tasks:
+  test:
+    internal: true
+    silent: true
+    cmds:
+      - task: testrunner:test
