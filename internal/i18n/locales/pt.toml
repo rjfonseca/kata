@@ -1,0 +1,6 @@
+# Portuguese Translations (Source for go:generate)
+kataNotFound = "O kata '%s' não foi encontrado."
+startingKata = "Iniciando o kata..."
+testPassed = "Testes passaram com sucesso."
+testFailed = "Testes falharam. Verifique os logs."
+kataStarted = "Kata iniciado com sucesso."

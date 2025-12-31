@@ -37,3 +37,5 @@ go.work.sum
 /katas/
 # binary
 /kata
+# Generated i18n files
+/internal/i18n/locales.go

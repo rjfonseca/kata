@@ -7,6 +7,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/rjfonseca/kata/internal/cmd"
+	"github.com/rjfonseca/kata/internal/i18n"
 	"github.com/rjfonseca/kata/internal/state"
 )
 
@@ -30,6 +31,12 @@ func startCommand() *cli.Command {
 				return errors.New("kata name is required")
 			}
 
+			translator, ok := c.App.Metadata["translator"].(i18n.Translator)
+			if !ok {
+				// This should not happen if the Before hook is set up correctly
+				return errors.New("translator not found in context")
+			}
+
 			kataName := c.Args().First()
 
 			root, err := os.Getwd()
@@ -43,7 +50,7 @@ func startCommand() *cli.Command {
 				Force: c.Bool("force"),
 			}
 
-			return cmd.Start(root, stateRepo, kataName, f)
+			return cmd.Start(root, stateRepo, kataName, f, translator)
 		},
 	}
 }

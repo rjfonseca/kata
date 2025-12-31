@@ -5,6 +5,9 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/rjfonseca/kata/internal/config"
+	"github.com/rjfonseca/kata/internal/i18n"
+	"github.com/rjfonseca/kata/internal/i18n/loader"
 	"github.com/rjfonseca/kata/internal/logging"
 	"github.com/urfave/cli/v2"
 )
@@ -36,8 +39,28 @@ func main() {
 			if err != nil {
 				return err
 			}
-
 			logging.Init(level)
+
+			// --- I18n Initialization ---
+			langFlag := ctx.String("lang")
+			langTag := config.ResolveLanguage(langFlag)
+
+			// Assume current directory is the project root for file loading.
+			projectRoot := "."
+			embeddedLoader := loader.NewEmbeddedLoader()
+			fileLoader := loader.NewFileLoader(projectRoot)
+			compositeLoader := loader.NewCompositeLoader(embeddedLoader, fileLoader)
+
+			translator, err := i18n.NewDefaultTranslator(compositeLoader, langTag)
+			if err != nil {
+				return fmt.Errorf("failed to initialize translator: %w", err)
+			}
+
+			if ctx.App.Metadata == nil {
+				ctx.App.Metadata = make(map[string]interface{})
+			}
+			ctx.App.Metadata["translator"] = translator
+			// --- End I18n Initialization ---
 
 			return nil
 		},

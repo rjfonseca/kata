@@ -1,0 +1,7 @@
+# English Translations Example
+# This file is copied by `kata init` to your project's `i18n` directory.
+# You can copy it to a new file (e.g., `fr.toml`) to create a new translation,
+# or uncomment and change values here to override the default English messages.
+
+#kataNotFound = "My custom not found message for: %s"
+#startingKata = "Let's gooo: %s"

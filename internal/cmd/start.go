@@ -13,6 +13,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/rjfonseca/kata/internal/assets"
 	"github.com/rjfonseca/kata/internal/fsutil"
+	"github.com/rjfonseca/kata/internal/i18n"
 	"github.com/rjfonseca/kata/internal/kata"
 	"github.com/rjfonseca/kata/internal/scaffold"
 	"github.com/rjfonseca/kata/internal/state"
@@ -22,7 +23,7 @@ type StartFlags struct {
 	Force bool
 }
 
-func Start(root string, stateRepo *state.Repository, kataName string, f StartFlags) error {
+func Start(root string, stateRepo *state.Repository, kataName string, f StartFlags, translator i18n.Translator) error {
 	if stateRepo.Exists() && !f.Force {
 		return errors.New("kata already started (use --force to overwrite)")
 	}
@@ -225,7 +226,7 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 		return err
 	}
 
-	slog.Info("kata started", "kata", kataName)
+	slog.Info(translator.T("kataStarted"), "kata", kataName)
 	return nil
 
 }
