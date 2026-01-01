@@ -2,13 +2,17 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/urfave/cli/v2"
 
 	"github.com/rjfonseca/kata/internal/cmd"
 	"github.com/rjfonseca/kata/internal/i18n"
+	"github.com/rjfonseca/kata/internal/interactive"
+	"github.com/rjfonseca/kata/internal/kata"
 	"github.com/rjfonseca/kata/internal/state"
+	"github.com/rjfonseca/kata/internal/taskrunner"
 )
 
 // startCommand starts a kata execution.
@@ -27,24 +31,66 @@ func startCommand(translator i18n.Translator) *cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) error {
-			if c.Args().Len() != 1 {
-				return errors.New(translator.T("start.error_kata_name_required"))
-			}
-
-			kataName := c.Args().First()
-
 			root, err := os.Getwd()
 			if err != nil {
 				return err
 			}
-
 			stateRepo := state.NewRepository(root)
 
+			kataName := c.Args().First()
 			f := cmd.StartFlags{
 				Force: c.Bool("force"),
 			}
 
-			return cmd.Start(root, stateRepo, kataName, f, translator)
+			// Non-interactive path
+			if kataName == "" {
+				if isNonInteractive(c) {
+					return errors.New(translator.T("start.error_kata_name_required"))
+				}
+
+				kataRepo := kata.NewRepository(root)
+				katas, err := kataRepo.ListKatas()
+				if err != nil {
+					return fmt.Errorf("%s: %w", translator.T("start.error_list_katas"), err)
+				}
+
+				if len(katas) == 0 {
+					fmt.Println(translator.T("start.log_no_katas_found"))
+					return nil
+				}
+
+				kataName, err = interactive.Select(translator.T("start.prompt_select_kata"), katas)
+				if err != nil {
+					return fmt.Errorf("%s: %w", translator.T("start.error_select_kata"), err)
+				}
+				if kataName == "" {
+					return nil // User cancelled
+				}
+			}
+
+			if err := cmd.Start(root, stateRepo, kataName, f, translator); err != nil {
+				return err
+			}
+
+			runner, err := taskrunner.New()
+			if err != nil {
+				return fmt.Errorf("%s: %w", translator.T("run.error_create_executor"), err)
+			}
+
+			err = cmd.Run(stateRepo, runner, translator)
+			if isNonInteractive(c) {
+				return err
+			}
+
+			return interactive.Run(c.Context, interactive.Options{
+				LoadState: stateRepo.Load,
+				Run: func() error {
+					return cmd.Run(stateRepo, runner, translator)
+				},
+				Next: func() error {
+					return cmd.Next(root, stateRepo, translator)
+				},
+			})
 		},
 	}
 }

@@ -1,23 +1,18 @@
 package interactive
 
-import (
-	"context"
+import "github.com/charmbracelet/huh"
 
-	"github.com/charmbracelet/huh"
-)
-
-// SelectKata prompts the user to select a kata from the given list.
-func SelectKata(ctx context.Context, names []string) (string, error) {
-	var selected string
-
-	opts := make([]huh.Option[string], 0, len(names))
-	for _, name := range names {
-		opts = append(opts, huh.NewOption(name, name))
+// Select prompts the user to select an option from the given list.
+func Select(title string, options []string) (string, error) {
+	if len(options) == 0 {
+		return "", nil
 	}
 
+	var selected string
+
 	selectField := huh.NewSelect[string]().
-		Title("Which kata do you want to start?").
-		Options(opts...).
+		Title(title).
+		Options(huh.NewOptions(options...)...).
 		Height(10).
 		Value(&selected)
 
