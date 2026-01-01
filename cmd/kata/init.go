@@ -6,19 +6,20 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/rjfonseca/kata/internal/cmd"
+	"github.com/rjfonseca/kata/internal/i18n"
 )
 
 // initCommand initializes a kata catalog repository in the current directory.
-func initCommand() *cli.Command {
+func initCommand(translator i18n.Translator) *cli.Command {
 	return &cli.Command{
 		Name:  "init",
-		Usage: "Initialize a kata catalog repository",
+		Usage: translator.T("init.usage"),
 		Action: func(c *cli.Context) error {
 			root, err := os.Getwd()
 			if err != nil {
 				return err
 			}
-			return cmd.Init(root)
+			return cmd.Init(root, translator)
 		},
 	}
 }

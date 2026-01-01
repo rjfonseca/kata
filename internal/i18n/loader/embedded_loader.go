@@ -1,8 +1,6 @@
 package loader
 
 import (
-	"strings"
-
 	"golang.org/x/text/language"
 
 	"github.com/rjfonseca/kata/internal/i18n"
@@ -19,7 +17,7 @@ func NewEmbeddedLoader() *EmbeddedLoader {
 
 // Load loads messages for a given language tag from the generated map.
 func (l *EmbeddedLoader) Load(tag language.Tag) ([]i18n.Message, error) {
-	langCode := strings.SplitN(tag.String(), "-", 2)[0] // e.g., "en-US" -> "en"
+	langCode := tag.String()
 
 	langMessages, ok := i18n.EmbeddedLocales[langCode]
 	if !ok {

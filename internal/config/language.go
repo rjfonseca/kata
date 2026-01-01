@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"log/slog"
 
 	"github.com/Xuanwo/go-locale"
 	"golang.org/x/text/language"
@@ -16,7 +16,7 @@ func ResolveLanguage(langFlag string) language.Tag {
 	if langFlag != "" {
 		tag, err := language.Parse(langFlag)
 		if err != nil {
-			log.Printf("Warning: Could not parse language flag '%s', using default. Error: %v\n", langFlag, err)
+			slog.Warn("Could not parse language flag, using default.", "lang", langFlag, "error", err)
 			return language.English
 		}
 		return tag
@@ -29,7 +29,7 @@ func ResolveLanguage(langFlag string) language.Tag {
 	}
 
 	// Loga o erro de detecção, mas continua para o fallback
-	log.Printf("Warning: Could not detect OS locale, using default. Error: %v\n", err)
+	slog.Warn("Could not detect OS locale, using default.", "error", err)
 
 	// 3. Padrão: Inglês
 	return language.English

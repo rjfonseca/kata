@@ -7,11 +7,12 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/rjfonseca/kata/internal/i18n"
 	"github.com/rjfonseca/kata/internal/scaffold"
 	"github.com/rjfonseca/kata/internal/state"
 )
 
-func Next(root string, stateRepo *state.Repository) error {
+func Next(root string, stateRepo *state.Repository, translator i18n.Translator) error {
 	s, err := stateRepo.Load()
 	if err != nil {
 		return err
@@ -19,7 +20,7 @@ func Next(root string, stateRepo *state.Repository) error {
 
 	// Case 1: tests are failing (Red)
 	if !s.TestPassing {
-		return errors.New("tests are failing, make them pass before advancing")
+		return errors.New(translator.T("next.error_tests_failing"))
 	}
 
 	// Case 2: there is a next step to advance to
@@ -29,7 +30,7 @@ func Next(root string, stateRepo *state.Repository) error {
 		}
 
 		stepName := s.Steps[s.CurrentStepIndex]
-		slog.Info("advancing to next step", "step", stepName)
+		slog.Info(translator.T("next.log_advancing"), "step", stepName)
 
 		manifest, err := scaffold.LoadManifest(root)
 		if err != nil {
@@ -50,7 +51,7 @@ func Next(root string, stateRepo *state.Repository) error {
 		)
 
 		if err := copier.Apply(os.DirFS(stepDir), "step:"+stepName); err != nil {
-			return fmt.Errorf("failed to apply step %q: %w", stepName, err)
+			return fmt.Errorf("%s: %w", translator.T("next.error_apply_step", stepName), err)
 		}
 
 		if err := manifest.Save(root); err != nil {
@@ -64,16 +65,14 @@ func Next(root string, stateRepo *state.Repository) error {
 	if !s.KataFinished {
 		s.KataFinished = true
 		slog.Info(
-			"kata completed ð",
+			translator.T("next.log_completed"),
 			"kata", s.KataName,
 		)
 		return stateRepo.Save(s)
 	}
 
 	// Case 4: kata already completed
-	slog.Info(
-		"kata already completed! You can keep refactoring and learning",
-	)
+	slog.Info(translator.T("next.log_already_completed"))
 
 	return nil
 }

@@ -1,7 +1,15 @@
 # English Translations Example
-# This file is copied by `kata init` to your project's `i18n` directory.
+#
+# This file is copied by `kata init` to your project's `katas/i18n` directory.
 # You can copy it to a new file (e.g., `fr.toml`) to create a new translation,
 # or uncomment and change values here to override the default English messages.
+#
+# The keys are structured as `domain.key_name`.
+# Domains correspond to commands (e.g., `init`, `start`).
+# The `cli` domain is for global flags and messages.
 
-#kataNotFound = "My custom not found message for: %s"
-#startingKata = "Let's gooo: %s"
+# [cli]
+# usage = "My custom app usage description"
+
+# [start]
+# error_kata_name_required = "You must provide a kata name!"

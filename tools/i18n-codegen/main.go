@@ -39,35 +39,44 @@ func main() {
 		log.Fatal("-in and -out flags are required")
 	}
 
-	// Read all .toml files from the input directory
 	files, err := filepath.Glob(filepath.Join(inPath, "*.toml"))
 	if err != nil {
 		log.Fatalf("Failed to glob for TOML files: %v", err)
 	}
 
-	// masterMap holds all translations: lang -> key -> value
 	masterMap := make(map[string]map[string]string)
 
 	for _, file := range files {
 		langCode := strings.TrimSuffix(filepath.Base(file), ".toml")
 
-		var messages map[string]string
-		if _, err := toml.DecodeFile(file, &messages); err != nil {
+		var domainMessages map[string]map[string]string
+		if _, err := toml.DecodeFile(file, &domainMessages); err != nil {
 			log.Fatalf("Failed to decode TOML file %s: %v", file, err)
 		}
-		masterMap[langCode] = messages
+
+		masterMap[langCode] = flatten(domainMessages)
 	}
 
-	// Generate the Go file from the template
 	var buffer bytes.Buffer
 	if err := fileTemplate.Execute(&buffer, masterMap); err != nil {
 		log.Fatalf("Failed to execute template: %v", err)
 	}
 
-	// Write the generated content to the output file
 	if err := os.WriteFile(outPath, buffer.Bytes(), 0644); err != nil {
 		log.Fatalf("Failed to write output file %s: %v", outPath, err)
 	}
 
 	fmt.Printf("Successfully generated %s from %d language(s)\n", outPath, len(masterMap))
+}
+
+// flatten takes a map of domains and their messages and flattens it
+// into a single-level map with keys like "domain.key".
+func flatten(data map[string]map[string]string) map[string]string {
+	flat := make(map[string]string)
+	for domain, messages := range data {
+		for key, value := range messages {
+			flat[domain+"."+key] = value
+		}
+	}
+	return flat
 }

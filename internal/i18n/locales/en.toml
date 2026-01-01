@@ -1,6 +1,65 @@
-# English Translations (Source for go:generate)
-kataNotFound = "Kata '%s' not found."
-startingKata = "Starting kata..."
-testPassed = "Tests passed successfully."
-testFailed = "Tests failed. Check the logs."
-kataStarted = "Kata started successfully."
+# Command-Line Interface messages (global usage, flags)
+[cli]
+usage = "Create and run code katas"
+flag_lang_usage = "Language for messages (e.g. en-US, pt-BR)"
+flag_verbose_usage = "Enable verbose (debug) logging"
+flag_quiet_usage = "Suppress informational logs"
+flag_non_interactive_usage = "Disables interactive mode. Use this for scripting, CI, or AI agents"
+
+# --- Config Command ---
+[config]
+usage = "Manage kata configuration"
+flag_set_lang_usage = "Set global language (e.g. pt-BR)"
+log_lang_updated = "Language updated"
+
+# --- Init Command ---
+[init]
+usage = "Initialize a new kata repository"
+log_creating_dir = "Creating katas directory"
+log_copying_catalog = "Copying embedded catalog"
+log_copying_runners = "Copying embedded runners"
+log_copying_i18n = "Copying embedded i18n files"
+log_repo_initialized = "Kata repository initialized"
+error_dir_exists = "Katas directory already exists"
+
+# --- Start Command ---
+[start]
+usage = "Start a kata"
+args_usage = "<kata-name>"
+flag_force_usage = "Overwrite existing kata state"
+error_kata_name_required = "A kata name is required"
+error_kata_already_started = "A kata has already been started. Use --force to overwrite."
+error_copy_failed = "Failed to copy kata '%s' to .kata"
+error_read_steps_failed = "Failed to read steps for kata '%s'"
+error_no_steps = "Kata '%s' has no steps"
+error_read_config_failed = "Failed to read config.toml for kata '%s'"
+error_no_runner = "Kata '%s' does not define a runner in config.toml"
+error_copy_runner_failed = "Failed to copy runner '%s' to project root"
+error_scaffold_failed = "Failed to apply scaffold for kata '%s'"
+error_apply_first_step_failed = "Failed to apply first step '%s' for kata '%s'"
+error_translator_not_found = "Translator not found in context"
+log_using_local_catalog = "Using local kata catalog"
+log_using_embedded_catalog = "Using embedded kata catalog"
+log_runner_selected = "Kata runner selected"
+log_using_local_runner = "Using local runner"
+log_using_embedded_runner = "Using embedded runner"
+log_scaffold_applied = "Applying kata scaffold"
+log_first_step_applied = "Applying first kata step"
+log_kata_started = "Kata started successfully"
+
+# --- Run Command ---
+[run]
+usage = "Run the kata tests"
+error_read_cwd = "reading working directory"
+error_create_executor = "creating task executor"
+error_run_task = "running task 'test'"
+
+# --- Next Command ---
+[next]
+usage = "Advance the kata to the next step"
+error_not_started = "No kata started. Run 'kata start <name>' first."
+error_tests_failing = "Tests are failing. Make them pass before advancing."
+error_apply_step = "Failed to apply step '%s'"
+log_advancing = "Advancing to next step"
+log_completed = "Kata completed! 🎉"
+log_already_completed = "Kata already completed! You can keep refactoring and learning."

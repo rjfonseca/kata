@@ -7,30 +7,30 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/rjfonseca/kata/internal/cmd"
+	"github.com/rjfonseca/kata/internal/i18n"
 	"github.com/rjfonseca/kata/internal/interactive"
 	"github.com/rjfonseca/kata/internal/state"
 	"github.com/rjfonseca/kata/internal/taskrunner"
 )
 
 // runCommand creates the `kata run` command.
-func runCommand() *cli.Command {
+func runCommand(translator i18n.Translator) *cli.Command {
 	return &cli.Command{
 		Name:  "run",
-		Usage: "Run the kata tests",
+		Usage: translator.T("run.usage"),
 		Action: func(ctx *cli.Context) error {
-
 			root, err := os.Getwd()
 			if err != nil {
-				return fmt.Errorf("reading working directory: %w", err)
+				return fmt.Errorf("%s: %w", translator.T("run.error_read_cwd"), err)
 			}
 
 			stateRepo := state.NewRepository(root)
 
 			runner, err := taskrunner.New()
 			if err != nil {
-				return fmt.Errorf("creating task executor: %w", err)
+				return fmt.Errorf("%s: %w", translator.T("run.error_create_executor"), err)
 			}
-			err = cmd.Run(stateRepo, runner)
+			err = cmd.Run(stateRepo, runner, translator)
 			if isNonInteractive(ctx) {
 				return err
 			}
@@ -38,10 +38,10 @@ func runCommand() *cli.Command {
 			return interactive.Run(ctx.Context, interactive.Options{
 				LoadState: stateRepo.Load,
 				Run: func() error {
-					return cmd.Run(stateRepo, runner)
+					return cmd.Run(stateRepo, runner, translator)
 				},
 				Next: func() error {
-					return cmd.Next(root, stateRepo)
+					return cmd.Next(root, stateRepo, translator)
 				},
 			})
 		},

@@ -28,19 +28,29 @@ type DefaultTranslator struct {
 // Ele recebe um MessageLoader que será usado para carregar as mensagens.
 // O idioma preferencial é detectado a partir do ambiente ou passado como padrão.
 func NewDefaultTranslator(loader MessageLoader, preferredLangs ...language.Tag) (*DefaultTranslator, error) {
-	// 1. Detectar o idioma preferencial
-	// Por enquanto, vamos assumir 'en' como padrão se nada for fornecido ou detectado.
-	// A detecção real virá de variáveis de ambiente.
-	var langTag language.Tag
-	if len(preferredLangs) > 0 {
-		langTag = preferredLangs[0]
-	} else {
-		// Placeholder para detecção real do sistema operacional.
-		// Por enquanto, usaremos "en" como padrão.
-		langTag = language.English
+	// Dynamically get the list of supported languages from the embedded map
+	var supportedTags []language.Tag
+	for langStr := range EmbeddedLocales {
+		supportedTags = append(supportedTags, language.Make(langStr))
+	}
+	if len(supportedTags) == 0 {
+		supportedTags = append(supportedTags, language.English)
 	}
 
-	// 2. Carregar mensagens de fallback (inglês)
+	// Create a matcher with the supported languages
+	matcher := language.NewMatcher(supportedTags)
+
+	// Determine the desired language tag
+	desiredTag := language.English
+	if len(preferredLangs) > 0 {
+		desiredTag = preferredLangs[0]
+	}
+
+	// Use the matcher to find the best supported language tag
+	_, index, _ := matcher.Match(desiredTag)
+	langTag := supportedTags[index]
+
+	// Load fallback messages (English)
 	fallbackMsgs, err := loader.Load(language.English)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load fallback (English) messages: %w", err)
@@ -50,15 +60,13 @@ func NewDefaultTranslator(loader MessageLoader, preferredLangs ...language.Tag) 
 		fallbackMap[msg.Key] = msg.Value
 	}
 
-	// 3. Carregar mensagens para o idioma atual
+	// Load messages for the matched language
 	currentMsgs, err := loader.Load(langTag)
 	if err != nil {
-		// Não é um erro crítico se não houver tradução para o idioma atual,
-		// apenas usaremos o fallback.
 		fmt.Printf("Warning: Could not load messages for language %s, using fallback. Error: %v\n", langTag, err)
 	}
+
 	currentMap := make(map[string]string)
-	// Primeiro preenche com o fallback, depois sobrescreve com o idioma atual
 	for k, v := range fallbackMap {
 		currentMap[k] = v
 	}
@@ -70,8 +78,7 @@ func NewDefaultTranslator(loader MessageLoader, preferredLangs ...language.Tag) 
 		messages:         currentMap,
 		fallbackMessages: fallbackMap,
 		currentLang:      langTag,
-	},
-	nil
+	}, nil
 }
 
 // T traduz uma mensagem para a chave fornecida, formatando-a com os argumentos.

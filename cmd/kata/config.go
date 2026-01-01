@@ -7,16 +7,17 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/rjfonseca/kata/internal/config"
+	"github.com/rjfonseca/kata/internal/i18n"
 )
 
-func configCommand() *cli.Command {
+func configCommand(translator i18n.Translator) *cli.Command {
 	return &cli.Command{
 		Name:  "config",
-		Usage: "Manage kata configuration",
+		Usage: translator.T("config.usage"),
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "set-lang",
-				Usage: "Set global language (e.g. pt-BR)",
+				Usage: translator.T("config.flag_set_lang_usage"),
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -35,7 +36,7 @@ func configCommand() *cli.Command {
 				if err := repo.Save(cfg); err != nil {
 					return err
 				}
-				slog.Info("language updated", "lang", lang)
+				slog.Info(translator.T("config.log_lang_updated"), "lang", lang)
 				return nil
 			}
 

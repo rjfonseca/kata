@@ -3,11 +3,12 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/rjfonseca/kata/internal/i18n"
 	"github.com/rjfonseca/kata/internal/state"
 	"github.com/rjfonseca/kata/internal/taskrunner"
 )
 
-func Run(stateRepo *state.Repository, runner taskrunner.Runner) error {
+func Run(stateRepo *state.Repository, runner taskrunner.Runner, translator i18n.Translator) error {
 	st, err := stateRepo.Load()
 	if err != nil {
 		return err
@@ -21,7 +22,7 @@ func Run(stateRepo *state.Repository, runner taskrunner.Runner) error {
 	}
 
 	if err != nil {
-		return fmt.Errorf("running task 'test': %w", err)
+		return fmt.Errorf("%s: %w", translator.T("run.error_run_task"), err)
 	}
 
 	return nil

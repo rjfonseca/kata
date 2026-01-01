@@ -25,7 +25,7 @@ type StartFlags struct {
 
 func Start(root string, stateRepo *state.Repository, kataName string, f StartFlags, translator i18n.Translator) error {
 	if stateRepo.Exists() && !f.Force {
-		return errors.New("kata already started (use --force to overwrite)")
+		return errors.New(translator.T("start.error_kata_already_started"))
 	}
 
 	// ------------------------------------------------------------------
@@ -38,11 +38,11 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 	var kataBasePath string
 
 	if _, err := os.Stat(localKataDir); err == nil {
-		slog.Info("using local kata catalog", "kata", kataName)
+		slog.Info(translator.T("start.log_using_local_catalog"), "kata", kataName)
 		kataFS = os.DirFS(localKataDir)
 		kataBasePath = "."
 	} else {
-		slog.Info("using embedded kata catalog", "kata", kataName)
+		slog.Info(translator.T("start.log_using_embedded_catalog"), "kata", kataName)
 		kataFS = assets.FS
 		kataBasePath = filepath.Join("catalog", kataName)
 	}
@@ -59,11 +59,7 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 	}
 
 	if err := fsutil.CopyDir(kataFS, kataBasePath, kataDstDir); err != nil {
-		return fmt.Errorf(
-			"failed to copy kata '%s' to .kata: %w",
-			kataName,
-			err,
-		)
+		return fmt.Errorf("%s: %w", translator.T("start.error_copy_failed", kataName), err)
 	}
 
 	// ------------------------------------------------------------------
@@ -74,11 +70,7 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 
 	entries, err := os.ReadDir(stepsDir)
 	if err != nil {
-		return fmt.Errorf(
-			"failed to read steps for kata '%s': %w",
-			kataName,
-			err,
-		)
+		return fmt.Errorf("%s: %w", translator.T("start.error_read_steps_failed", kataName), err)
 	}
 
 	var steps []string
@@ -89,10 +81,7 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 	}
 
 	if len(steps) == 0 {
-		return fmt.Errorf(
-			"kata '%s' has no steps",
-			kataName,
-		)
+		return errors.New(translator.T("start.error_no_steps", kataName))
 	}
 
 	sort.Strings(steps)
@@ -105,21 +94,14 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 
 	var cfg kata.Config
 	if _, err := toml.DecodeFile(configPath, &cfg); err != nil {
-		return fmt.Errorf(
-			"failed to read config.toml for kata '%s': %w",
-			kataName,
-			err,
-		)
+		return fmt.Errorf("%s: %w", translator.T("start.error_read_config_failed", kataName), err)
 	}
 
 	if cfg.Runner == "" {
-		return fmt.Errorf(
-			"kata '%s' does not define a runner in config.toml",
-			kataName,
-		)
+		return errors.New(translator.T("start.error_no_runner", kataName))
 	}
 
-	slog.Info("kata runner selected", "runner", cfg.Runner)
+	slog.Info(translator.T("start.log_runner_selected"), "runner", cfg.Runner)
 
 	// ------------------------------------------------------------------
 	// Resolve runner source (local wins over embedded)
@@ -132,11 +114,11 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 	var runnerBasePath string
 
 	if _, err := os.Stat(localRunnerDir); err == nil {
-		slog.Info("using local runner", "runner", runnerName)
+		slog.Info(translator.T("start.log_using_local_runner"), "runner", runnerName)
 		runnerFS = os.DirFS(localRunnerDir)
 		runnerBasePath = "."
 	} else {
-		slog.Info("using embedded runner", "runner", runnerName)
+		slog.Info(translator.T("start.log_using_embedded_runner"), "runner", runnerName)
 		runnerFS = assets.FS
 		runnerBasePath = filepath.Join("runners", runnerName)
 	}
@@ -150,11 +132,7 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 		runnerBasePath,
 		root,
 	); err != nil {
-		return fmt.Errorf(
-			"failed to copy runner '%s' to project root: %w",
-			runnerName,
-			err,
-		)
+		return fmt.Errorf("%s: %w", translator.T("start.error_copy_runner_failed", runnerName), err)
 	}
 
 	// ------------------------------------------------------------------
@@ -191,13 +169,9 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 
 	scaffoldDir := filepath.Join(kataDstDir, "scaffold")
 	if info, err := os.Stat(scaffoldDir); err == nil && info.IsDir() {
-		slog.Info("applying kata scaffold")
+		slog.Info(translator.T("start.log_scaffold_applied"))
 		if err := copier.Apply(os.DirFS(scaffoldDir), "scaffold"); err != nil {
-			return fmt.Errorf(
-				"failed to apply scaffold for kata '%s': %w",
-				kataName,
-				err,
-			)
+			return fmt.Errorf("%s: %w", translator.T("start.error_scaffold_failed", kataName), err)
 		}
 	}
 
@@ -208,25 +182,20 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 	firstStep := steps[0]
 	firstStepDir := filepath.Join(kataDstDir, "steps", firstStep)
 
-	slog.Info("applying first kata step", "step", firstStep)
+	slog.Info(translator.T("start.log_first_step_applied"), "step", firstStep)
 
 	if err := copier.Apply(
 		os.DirFS(firstStepDir),
 		"step:"+firstStep,
 	); err != nil {
-		return fmt.Errorf(
-			"failed to apply first step '%s' for kata '%s': %w",
-			firstStep,
-			kataName,
-			err,
-		)
+		return fmt.Errorf("%s: %w", translator.T("start.error_apply_first_step_failed", firstStep, kataName), err)
 	}
 
 	if err := manifest.Save(root); err != nil {
 		return err
 	}
 
-	slog.Info(translator.T("kataStarted"), "kata", kataName)
+	slog.Info(translator.T("start.log_kata_started"), "kata", kataName)
 	return nil
 
 }

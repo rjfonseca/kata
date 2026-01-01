@@ -1,0 +1,65 @@
+# Mensagens da Interface de Linha de Comando (uso global, flags)
+[cli]
+usage = "Crie e execute katas de código"
+flag_lang_usage = "Idioma para as mensagens (ex: en-US, pt-BR)"
+flag_verbose_usage = "Habilita logs detalhados (debug)"
+flag_quiet_usage = "Suprime logs informacionais"
+flag_non_interactive_usage = "Desabilita o modo interativo. Use para scripts, CI ou agentes de IA"
+
+# --- Comando Config ---
+[config]
+usage = "Gerencia a configuração do kata"
+flag_set_lang_usage = "Define o idioma global (ex: pt-BR)"
+log_lang_updated = "Idioma atualizado"
+
+# --- Comando Init ---
+[init]
+usage = "Inicializa um novo repositório de katas"
+log_creating_dir = "Criando diretório 'katas'"
+log_copying_catalog = "Copiando catálogo embutido"
+log_copying_runners = "Copiando runners embutidos"
+log_copying_i18n = "Copiando arquivos i18n embutidos"
+log_repo_initialized = "Repositório de katas inicializado"
+error_dir_exists = "O diretório 'katas' já existe"
+
+# --- Comando Start ---
+[start]
+usage = "Inicia um kata"
+args_usage = "<nome-do-kata>"
+flag_force_usage = "Sobrescreve o estado de um kata existente"
+error_kata_name_required = "O nome do kata é obrigatório"
+error_kata_already_started = "Um kata já foi iniciado. Use --force para sobrescrever."
+error_copy_failed = "Falha ao copiar o kata '%s' para .kata"
+error_read_steps_failed = "Falha ao ler os passos para o kata '%s'"
+error_no_steps = "O kata '%s' não possui passos"
+error_read_config_failed = "Falha ao ler o config.toml para o kata '%s'"
+error_no_runner = "O kata '%s' não define um runner no config.toml"
+error_copy_runner_failed = "Falha ao copiar o runner '%s' para a raiz do projeto"
+error_scaffold_failed = "Falha ao aplicar o scaffold para o kata '%s'"
+error_apply_first_step_failed = "Falha ao aplicar o primeiro passo '%s' para o kata '%s'"
+error_translator_not_found = "Tradutor não encontrado no contexto"
+log_using_local_catalog = "Usando catálogo de katas local"
+log_using_embedded_catalog = "Usando catálogo de katas embutido"
+log_runner_selected = "Runner do kata selecionado"
+log_using_local_runner = "Usando runner local"
+log_using_embedded_runner = "Usando runner embutido"
+log_scaffold_applied = "Aplicando scaffold do kata"
+log_first_step_applied = "Aplicando primeiro passo do kata"
+log_kata_started = "Kata iniciado com sucesso"
+
+# --- Comando Run ---
+[run]
+usage = "Executa os testes do kata"
+error_read_cwd = "lendo diretório de trabalho"
+error_create_executor = "criando executor de tarefas"
+error_run_task = "executando tarefa 'test'"
+
+# --- Comando Next ---
+[next]
+usage = "Avança o kata para o próximo passo"
+error_not_started = "Nenhum kata iniciado. Execute 'kata start <nome>' primeiro."
+error_tests_failing = "Os testes estão falhando. Corrija-os antes de avançar."
+error_apply_step = "Falha ao aplicar o passo '%s'"
+log_advancing = "Avançando para o próximo passo"
+log_completed = "Kata concluído! 🎉"
+log_already_completed = "Kata já concluído! Você pode continuar refatorando e aprendendo."

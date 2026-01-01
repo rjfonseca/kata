@@ -15,26 +15,20 @@ import (
 // It resolves the kata from the local catalog or the embedded catalog,
 // copies it to .kata, applies the scaffold and the first step,
 // and initializes the kata state.
-func startCommand() *cli.Command {
+func startCommand(translator i18n.Translator) *cli.Command {
 	return &cli.Command{
 		Name:      "start",
-		Usage:     "Start a kata",
-		ArgsUsage: "<kata-name>",
+		Usage:     translator.T("start.usage"),
+		ArgsUsage: translator.T("start.args_usage"),
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:  "force",
-				Usage: "Overwrite existing kata state",
+				Usage: translator.T("start.flag_force_usage"),
 			},
 		},
 		Action: func(c *cli.Context) error {
 			if c.Args().Len() != 1 {
-				return errors.New("kata name is required")
-			}
-
-			translator, ok := c.App.Metadata["translator"].(i18n.Translator)
-			if !ok {
-				// This should not happen if the Before hook is set up correctly
-				return errors.New("translator not found in context")
+				return errors.New(translator.T("start.error_kata_name_required"))
 			}
 
 			kataName := c.Args().First()
