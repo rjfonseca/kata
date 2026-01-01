@@ -28,7 +28,7 @@ func TestResolveLang_FromEnv(t *testing.T) {
 }
 
 func TestResolveLang_Fallback(t *testing.T) {
-	os.Unsetenv("KATA_LANG")
+	os.Unsetenv("KATA_LANG") //nolint: errcheck
 
 	cfg := DefaultConfig()
 	r := NewResolver(cfg)

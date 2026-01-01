@@ -14,5 +14,5 @@ func main() {
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("FIXME"))
+	w.Write([]byte("FIXME")) //nolint: errcheck
 }

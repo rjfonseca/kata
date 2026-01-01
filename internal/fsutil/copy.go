@@ -41,22 +41,30 @@ func CopyDir(src fs.FS, srcDir, dstDir string) error {
 	})
 }
 
-func copyFile(src fs.FS, srcPath, dstPath string) error {
+func copyFile(src fs.FS, srcPath, dstPath string) (err error) {
 	in, err := src.Open(srcPath)
 	if err != nil {
 		return err
 	}
-	defer in.Close()
+	defer func() {
+		if cerr := in.Close(); err == nil {
+			err = cerr
+		}
+	}()
 
 	out, err := os.Create(dstPath)
 	if err != nil {
 		return err
 	}
-	defer out.Close()
+	defer func() {
+		if cerr := out.Close(); err == nil {
+			err = cerr
+		}
+	}()
 
 	if _, err := io.Copy(out, in); err != nil {
 		return err
 	}
 
-	return out.Close()
+	return nil
 }

@@ -27,12 +27,9 @@ func (c *Copier) Apply(src fs.FS, sourceLabel string) error {
 			return nil
 		}
 
-		target := filepath.Join(c.Root, path)
 		// If the source file is a template, remove the .tmpl extension
-		if strings.HasSuffix(target, ".tmpl") {
-			// TODO(template): render .tmpl files using text/template
-			target = strings.TrimSuffix(target, ".tmpl")
-		}
+		target := strings.TrimSuffix(filepath.Join(c.Root, path), ".tmpl")
+		// TODO(template): render .tmpl files using text/template
 
 		if d.IsDir() {
 			return os.MkdirAll(target, 0o755)
@@ -72,18 +69,18 @@ func (c *Copier) handleOverwrite(src fs.FS, srcPath, dstPath, sourceLabel string
 	return c.writeNewFile(src, srcPath, dstPath, sourceLabel)
 }
 
-func (c *Copier) writeNewFile(src fs.FS, srcPath, dstPath, sourceLabel string) error {
+func (c *Copier) writeNewFile(src fs.FS, srcPath, dstPath, sourceLabel string) (err error) {
 	in, err := src.Open(srcPath)
 	if err != nil {
 		return err
 	}
-	defer in.Close()
+	defer in.Close() //nolint: errcheck
 
 	out, err := os.Create(dstPath)
 	if err != nil {
 		return err
 	}
-	defer out.Close()
+	defer out.Close() //nolint: errcheck
 
 	if _, err := io.Copy(out, in); err != nil {
 		return err
