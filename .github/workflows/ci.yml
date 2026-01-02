@@ -19,6 +19,8 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           version: latest
+      - name: Run i18n-lint
+        run: go run tools/i18n-lint/main.go
 
   test:
     runs-on: ubuntu-latest
