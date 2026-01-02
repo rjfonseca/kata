@@ -1,5 +1,7 @@
 package kata
 
 type Config struct {
-	Runner string `toml:"runner"`
+	Runner struct {
+		Name string `toml:"name"`
+	} `toml:"runner"`
 }

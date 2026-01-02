@@ -13,8 +13,9 @@ type TaskRunner struct {
 }
 
 // New creates a TaskRunner bound to a working directory.
-func New() (*TaskRunner, error) {
+func New(root string) (*TaskRunner, error) {
 	e := task.NewExecutor(task.WithVersionCheck(true))
+	e.Dir = root // Set the directory for the executor
 	err := e.Setup()
 	if err != nil {
 		return nil, fmt.Errorf("creating Taskfile executor: %w", err)
@@ -22,7 +23,6 @@ func New() (*TaskRunner, error) {
 	return &TaskRunner{
 		executor: e,
 	}, nil
-
 }
 
 // Run executes a task by name.

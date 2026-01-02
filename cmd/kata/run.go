@@ -26,7 +26,7 @@ func runCommand(translator i18n.Translator) *cli.Command {
 
 			stateRepo := state.NewRepository(root)
 
-			runner, err := taskrunner.New()
+			runner, err := taskrunner.New(root)
 			if err != nil {
 				return fmt.Errorf("%s: %w", translator.T("run.error_create_executor"), err)
 			}

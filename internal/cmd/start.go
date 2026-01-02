@@ -97,17 +97,17 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 		return fmt.Errorf("%s: %w", translator.T("start.error_read_config_failed", kataName), err)
 	}
 
-	if cfg.Runner == "" {
+	if cfg.Runner.Name == "" {
 		return errors.New(translator.T("start.error_no_runner", kataName))
 	}
 
-	slog.Info(translator.T("start.log_runner_selected"), "runner", cfg.Runner)
+	slog.Info(translator.T("start.log_runner_selected"), "runner", cfg.Runner.Name)
 
 	// ------------------------------------------------------------------
 	// Resolve runner source (local wins over embedded)
 	// ------------------------------------------------------------------
 
-	runnerName := cfg.Runner
+	runnerName := cfg.Runner.Name
 	localRunnerDir := filepath.Join(root, "katas", "runners", runnerName)
 
 	var runnerFS fs.FS
@@ -133,6 +133,10 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 		root,
 	); err != nil {
 		return fmt.Errorf("%s: %w", translator.T("start.error_copy_runner_failed", runnerName), err)
+	}
+
+	if err := renameTaskfile(root); err != nil {
+		return fmt.Errorf("failed to rename Taskfile: %w", err) // FIXME: translate error
 	}
 
 	// ------------------------------------------------------------------
@@ -163,8 +167,9 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 	}
 
 	copier := &scaffold.Copier{
-		Root:     root,
-		Manifest: manifest,
+		Root:         root,
+		Manifest:     manifest,
+		TemplateData: scaffold.TemplateData{KataName: kataName},
 	}
 
 	scaffoldDir := filepath.Join(kataDstDir, "scaffold")
@@ -198,4 +203,15 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 	slog.Info(translator.T("start.log_kata_started"), "kata", kataName)
 	return nil
 
+}
+
+func renameTaskfile(root string) error {
+	oldPath := filepath.Join(root, "Taskfile.testrunner.yml")
+	newPath := filepath.Join(root, "Taskfile.yml")
+	if _, err := os.Stat(oldPath); err == nil {
+		if err := os.Rename(oldPath, newPath); err != nil {
+			return fmt.Errorf("failed to rename %s to %s: %w", oldPath, newPath, err)
+		}
+	}
+	return nil
 }

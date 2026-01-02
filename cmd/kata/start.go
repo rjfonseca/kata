@@ -72,25 +72,27 @@ func startCommand(translator i18n.Translator) *cli.Command {
 				return err
 			}
 
-			runner, err := taskrunner.New()
-			if err != nil {
-				return fmt.Errorf("%s: %w", translator.T("run.error_create_executor"), err)
+			if !isNonInteractive(c) {
+				runner, err := taskrunner.New(root)
+				if err != nil {
+					return fmt.Errorf("%s: %w", translator.T("run.error_create_executor"), err)
+				}
+
+				// First run after start
+				_ = cmd.Run(stateRepo, runner, translator)
+
+				return interactive.Run(c.Context, interactive.Options{
+					LoadState: stateRepo.Load,
+					Run: func() error {
+						return cmd.Run(stateRepo, runner, translator)
+					},
+					Next: func() error {
+						return cmd.Next(root, stateRepo, translator)
+					},
+				})
 			}
 
-			err = cmd.Run(stateRepo, runner, translator)
-			if isNonInteractive(c) {
-				return err
-			}
-
-			return interactive.Run(c.Context, interactive.Options{
-				LoadState: stateRepo.Load,
-				Run: func() error {
-					return cmd.Run(stateRepo, runner, translator)
-				},
-				Next: func() error {
-					return cmd.Next(root, stateRepo, translator)
-				},
-			})
+			return nil
 		},
 	}
 }

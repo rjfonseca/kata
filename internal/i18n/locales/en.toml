@@ -4,7 +4,7 @@ usage = "Create and run code katas"
 flag_lang_usage = "Language for messages (e.g. en-US, pt-BR)"
 flag_verbose_usage = "Enable verbose (debug) logging"
 flag_quiet_usage = "Suppress informational logs"
-flag_non_interactive_usage = "Disables interactive mode. Use this for scripting, CI, or AI agents"
+flag_non_interactive_usage = "Disables interactive mode. Use for scripting, CI, or AI agents"
 
 # --- Config Command ---
 [config]
@@ -39,6 +39,7 @@ error_no_steps = "Kata '%s' has no steps"
 error_read_config_failed = "Failed to read config.toml for kata '%s'"
 error_no_runner = "Kata '%s' does not define a runner in config.toml"
 error_copy_runner_failed = "Failed to copy runner '%s' to project root"
+error_rename_taskfile = "failed to rename Taskfile"
 error_scaffold_failed = "Failed to apply scaffold for kata '%s'"
 error_apply_first_step_failed = "Failed to apply first step '%s' for kata '%s'"
 error_translator_not_found = "Translator not found in context"
