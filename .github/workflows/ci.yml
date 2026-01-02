@@ -15,6 +15,8 @@ jobs:
         with:
           go-version: 'stable'
           cache: false
+      - name: Generate files
+        run: go generate ./...
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
@@ -29,6 +31,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: 'stable'
+      - name: Generate files
+        run: go generate ./...
       - name: Test
         run: go test -v ./...
 
@@ -41,5 +45,7 @@ jobs:
           go-version: 'stable'
       - name: Install govulncheck
         run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Generate files
+        run: go generate ./...
       - name: Run govulncheck
         run: govulncheck ./...

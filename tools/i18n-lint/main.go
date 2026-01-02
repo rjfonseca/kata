@@ -7,6 +7,7 @@ import (
 	"go/token"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/BurntSushi/toml"
@@ -113,9 +114,10 @@ func findUsedKeys(root string) (map[string]bool, error) {
 			if sel.Sel.Name == "T" {
 				if len(call.Args) > 0 {
 					if lit, ok := call.Args[0].(*ast.BasicLit); ok && lit.Kind == token.STRING {
-						// value includes quotes, e.g. "key"
-						key := strings.Trim(lit.Value, "\"")
-						usedKeys[key] = true
+						key, err := strconv.Unquote(lit.Value)
+						if err == nil {
+							usedKeys[key] = true
+						}
 					}
 				}
 			}
