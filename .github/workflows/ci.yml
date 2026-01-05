@@ -15,14 +15,17 @@ jobs:
         with:
           go-version: 'stable'
           cache: false
+      - name: Install Task
+        uses: go-task/setup-task@v1
       - name: Generate files
         run: go generate ./...
-      - name: golangci-lint
+      - name: Install golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
           version: latest
-      - name: Run i18n-lint
-        run: go run tools/i18n-lint/main.go
+          skip-run: true
+      - name: Lint
+        run: task lint
 
   test:
     runs-on: ubuntu-latest
@@ -31,10 +34,12 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: 'stable'
+      - name: Install Task
+        uses: go-task/setup-task@v1
       - name: Generate files
         run: go generate ./...
       - name: Test
-        run: go test -v ./...
+        run: task test
 
   vulncheck:
     runs-on: ubuntu-latest
