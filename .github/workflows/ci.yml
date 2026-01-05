@@ -23,7 +23,7 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           version: latest
-          skip-run: true
+          install-only: true
       - name: Lint
         run: task lint
 
