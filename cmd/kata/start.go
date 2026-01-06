@@ -81,6 +81,9 @@ func startCommand(translator i18n.Translator) *cli.Command {
 				// First run after start
 				_ = cmd.Run(stateRepo, runner, translator)
 
+				tasks, _ := runner.ListTasks()
+				filteredTasks := filterTasks(tasks)
+
 				return interactive.Run(c.Context, interactive.Options{
 					LoadState: stateRepo.Load,
 					Run: func() error {
@@ -89,6 +92,10 @@ func startCommand(translator i18n.Translator) *cli.Command {
 					Next: func() error {
 						return cmd.Next(root, stateRepo, translator)
 					},
+					RunTask: func(taskName string) error {
+						return runner.Run(taskName)
+					},
+					CustomTasks: filteredTasks,
 				})
 			}
 

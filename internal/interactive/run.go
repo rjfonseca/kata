@@ -2,6 +2,7 @@ package interactive
 
 import (
 	"context"
+	"strings"
 
 	"github.com/rjfonseca/kata/internal/state"
 
@@ -11,8 +12,10 @@ import (
 type Options struct {
 	LoadState func() (*state.State, error)
 
-	Run  func() error
-	Next func() error
+	Run         func() error
+	Next        func() error
+	RunTask     func(string) error
+	CustomTasks []string
 }
 
 // Run starts the interactive loop driven by the kata state.
@@ -27,7 +30,7 @@ func Run(ctx context.Context, opts Options) error {
 
 		selectField := huh.NewSelect[Action]().
 			Title("What would you like to do next?").
-			Options(availableActions(st)...).
+			Options(availableActions(st, opts.CustomTasks)...).
 			Value(&choice)
 
 		note := huh.NewNote().Title(statusMessage(st))
@@ -47,6 +50,13 @@ func Run(ctx context.Context, opts Options) error {
 			_ = opts.Next()
 		case ActionExit:
 			return nil
+		default:
+			if strings.HasPrefix(string(choice), "task:") {
+				taskName := strings.TrimPrefix(string(choice), "task:")
+				if opts.RunTask != nil {
+					_ = opts.RunTask(taskName)
+				}
+			}
 		}
 	}
 }

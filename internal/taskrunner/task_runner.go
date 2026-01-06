@@ -34,3 +34,13 @@ func (r *TaskRunner) Run(taskName string) error {
 		Task: taskName,
 	})
 }
+
+// ListTasks returns a list of all available tasks.
+func (r *TaskRunner) ListTasks() ([]string, error) {
+	var tasks []string
+	// Keys(nil) returns an iterator of task names in sorted order.
+	for task := range r.executor.Taskfile.Tasks.Keys(nil) {
+		tasks = append(tasks, task)
+	}
+	return tasks, nil
+}

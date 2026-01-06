@@ -35,6 +35,9 @@ func runCommand(translator i18n.Translator) *cli.Command {
 				return err
 			}
 
+			tasks, _ := runner.ListTasks()
+			filteredTasks := filterTasks(tasks)
+
 			return interactive.Run(ctx.Context, interactive.Options{
 				LoadState: stateRepo.Load,
 				Run: func() error {
@@ -43,6 +46,10 @@ func runCommand(translator i18n.Translator) *cli.Command {
 				Next: func() error {
 					return cmd.Next(root, stateRepo, translator)
 				},
+				RunTask: func(taskName string) error {
+					return runner.Run(taskName)
+				},
+				CustomTasks: filteredTasks,
 			})
 		},
 	}
