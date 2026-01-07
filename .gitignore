@@ -39,3 +39,4 @@ go.work.sum
 /kata
 # Generated i18n files
 /internal/i18n/locales.go
+/.task/checksum/generate
