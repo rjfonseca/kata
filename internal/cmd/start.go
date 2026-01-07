@@ -168,6 +168,47 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 		TemplateData: scaffold.TemplateData{KataName: kataName},
 	}
 
+	// ------------------------------------------------------------------
+	// Apply global scaffold (if present)
+	// ------------------------------------------------------------------
+
+	// Local global scaffold check
+	localGlobalScaffoldDir := filepath.Join(root, "katas", "catalog", "scaffold")
+	var globalScaffoldFS fs.FS
+	var globalScaffoldBasePath string
+
+	if info, err := os.Stat(localGlobalScaffoldDir); err == nil && info.IsDir() {
+		// Use local global scaffold
+		globalScaffoldFS = os.DirFS(localGlobalScaffoldDir)
+		globalScaffoldBasePath = "."
+	} else {
+		// Use embedded global scaffold
+		globalScaffoldFS = assets.FS
+		// Use forward slashes for embed.FS, even on Windows
+		globalScaffoldBasePath = "catalog/scaffold"
+	}
+
+	// Apply it
+	// We need to check if the path exists in the chosen FS.
+	// For embedded, we check if catalog/scaffold exists.
+	// For local, we already checked directory existence.
+	shouldApplyGlobal := true
+	if _, err := fs.Stat(globalScaffoldFS, globalScaffoldBasePath); err != nil {
+		shouldApplyGlobal = false
+	}
+
+	if shouldApplyGlobal {
+		// We need a sub-fs for the apply
+		sub, err := fs.Sub(globalScaffoldFS, globalScaffoldBasePath)
+		if err == nil {
+			if err := copier.Apply(sub, "scaffold:global"); err != nil {
+				// We don't fail here to keep backward compatibility or if scaffold is missing
+				// But we log it
+				slog.Warn("Failed to apply global scaffold", "error", err)
+			}
+		}
+	}
+
 	scaffoldDir := filepath.Join(kataDstDir, "scaffold")
 	if info, err := os.Stat(scaffoldDir); err == nil && info.IsDir() {
 		slog.Info(translator.T("start.log_scaffold_applied"))
