@@ -25,8 +25,18 @@ go.work
 go.work.sum
 
 # env file
-.env
+/.env
 
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Kata temp dir
+/.kata/
+# Local catalog
+/katas/
+# binary
+/kata
+# Generated i18n files
+/internal/i18n/locales.go
+/.task/checksum/generate

@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  test:
+    desc: Run acceptance tests with Hurl (Docker)
+    set:
+      - pipefail
+    cmds:
+      - mkdir -p .kata
+      - |
+        docker compose exec -T hurl \
+          hurl --test  --error-format long --pretty . \
+          2>&1 | tee .kata/last_test.log
+    silent: true

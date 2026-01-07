@@ -1,0 +1,14 @@
+services:
+  api:
+    image: golang:1.25-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: go run ./cmd/api
+    ports:
+      - "8080:8080"
+
+    develop:
+      watch:
+        - action: restart
+          path: .
