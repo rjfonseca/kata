@@ -25,11 +25,17 @@ go.work
 go.work.sum
 
 # env file
+<<<<<<< HEAD
+.env
+=======
 /.env
+>>>>>>> ab9458b (fix: add go module to rpn calculator)
 
 # Editor/IDE
 # .idea/
 # .vscode/
+<<<<<<< HEAD
+=======
 
 # Kata temp dir
 /.kata/
@@ -40,3 +46,4 @@ go.work.sum
 # Generated i18n files
 /internal/i18n/locales.go
 /.task/checksum/generate
+>>>>>>> ab9458b (fix: add go module to rpn calculator)
