@@ -1,0 +1,9 @@
+version: '3'
+
+includes:
+  runner: ./Taskfile.testrunner.yml
+
+tasks:
+  test:
+    cmds:
+      - task: runner:test
