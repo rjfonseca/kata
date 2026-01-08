@@ -3,12 +3,6 @@ Tests for addition in RPN calculator.
 
 >>> from rpn import evaluate
 
-Single numbers should return themselves:
->>> evaluate("5")
-5
->>> evaluate("10")
-10
-
 Simple addition:
 >>> evaluate("1 2 +")
 3

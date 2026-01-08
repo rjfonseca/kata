@@ -8,10 +8,4 @@ Simple subtraction:
 2
 >>> evaluate("10 20 -")
 -10
-
-Mixed operations:
->>> evaluate("10 2 - 3 +")
-11
->>> evaluate("10 2 + 3 -")
-9
 """

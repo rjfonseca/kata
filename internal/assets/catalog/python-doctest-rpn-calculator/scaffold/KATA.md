@@ -9,5 +9,5 @@ For example:
 - `3 4 +` equals `7`
 - `3 4 + 2 *` equals `14` (since `(3 + 4) * 2 = 14`)
 
-You will write your implementation in `src/rpn.py` and run tests using `task test`.
+You will write your implementation in `src/rpn.py` and run tests using `kata run`.
 Tests are written as doctests in `src/*_test.py`.
