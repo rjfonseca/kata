@@ -2,7 +2,12 @@ package rpn
 
 import "testing"
 
-func TestEvaluate(t *testing.T) {
+// TestSubtraction tests the subtraction operator.
+// Implement the logic to handle the `-` operator. Remember that order matters.
+//
+// Example Input:
+// - "5 3 -" -> 2
+func TestSubtraction(t *testing.T) {
 	tests := []struct {
 		name       string
 		expression string
@@ -10,9 +15,15 @@ func TestEvaluate(t *testing.T) {
 		wantErr    bool
 	}{
 		{
-			name:       "empty expression",
-			expression: "",
-			want:       0,
+			name:       "simple subtraction",
+			expression: "5 3 -",
+			want:       2,
+			wantErr:    false,
+		},
+		{
+			name:       "subtraction resulting in negative",
+			expression: "3 5 -",
+			want:       -2,
 			wantErr:    false,
 		},
 	}
