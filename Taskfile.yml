@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 tasks:
   generate:
@@ -35,7 +35,7 @@ tasks:
   lint:
     desc: "Run linter"
     cmds:
-      - golangci-lint run $(go list ./... | grep -v 'github.com/rjfonseca/kata/internal/assets/catalog')
+      - golangci-lint run $(go list ./... | grep -v 'github.com/rjfonseca/kata/internal/assets/catalog' | sed 's|github.com/rjfonseca/kata|./|g')
       - go run ./tools/i18n-lint/
 
   clean:
