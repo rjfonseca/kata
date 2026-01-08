@@ -2,3 +2,7 @@ version: "2"
 run:
   skip-dirs:
     - internal/assets/catalog
+
+issues:
+  exclude-dirs:
+    - internal/assets/catalog
