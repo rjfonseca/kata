@@ -72,12 +72,25 @@ func startCommand(translator i18n.Translator) *cli.Command {
 				return err
 			}
 
-			if !isNonInteractive(c) {
-				runner, err := taskrunner.New(root)
-				if err != nil {
-					return fmt.Errorf("%s: %w", translator.T("run.error_create_executor"), err)
-				}
+			// We need a runner to execute the start hook and the first run
+			runner, err := taskrunner.New(root)
+			if err != nil {
+				return fmt.Errorf("%s: %w", translator.T("run.error_create_executor"), err)
+			}
 
+			// Hook: on_start_hook
+			if err := runner.RunOptional("on_start_hook"); err != nil {
+				return fmt.Errorf("on_start_hook failed: %w", err)
+			}
+
+			// Non-interactive stops here (unless we want to run the first test?
+			// Existing logic for non-interactive just does cmd.Start and returns nil.
+			// The original code only ran cmd.Run and interactive loop if !isNonInteractive.
+			// However, hooks might be relevant even for non-interactive?
+			// The prompt implies "Implement a on start hook... to execute a docker compose up -d".
+			// This seems necessary regardless of interactivity if the environment needs it.
+
+			if !isNonInteractive(c) {
 				// First run after start
 				_ = cmd.Run(stateRepo, runner, translator)
 
@@ -87,7 +100,7 @@ func startCommand(translator i18n.Translator) *cli.Command {
 						return cmd.Run(stateRepo, runner, translator)
 					},
 					Next: func() error {
-						return cmd.Next(root, stateRepo, translator)
+						return cmd.Next(root, stateRepo, runner, translator)
 					},
 				})
 			}

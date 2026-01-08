@@ -75,6 +75,10 @@ Runners are implemented declaratively using:
 The Kata binary does not embed any testing logic.  
 Different katas may use different runners.
 
+### Hooks
+
+Katas can define hooks in their `Taskfile.yml` to execute custom logic at various lifecycle events (e.g. `on_start_hook`, `on_kata_finish_hook`). See [Hooks Documentation](hooks.md) for details.
+
 ---
 
 ## Directory Structure

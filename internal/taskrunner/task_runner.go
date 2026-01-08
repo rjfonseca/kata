@@ -2,9 +2,11 @@ package taskrunner
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/go-task/task/v3"
+	taskerrors "github.com/go-task/task/v3/errors"
 )
 
 // TaskRunner executes tasks using go-task as a library.
@@ -33,4 +35,20 @@ func (r *TaskRunner) Run(taskName string) error {
 	return r.executor.RunTask(ctx, &task.Call{
 		Task: taskName,
 	})
+}
+
+// RunOptional executes a task by name if it exists.
+// It returns nil if the task does not exist.
+func (r *TaskRunner) RunOptional(taskName string) error {
+	err := r.Run(taskName)
+	if err == nil {
+		return nil
+	}
+
+	var notFoundErr *taskerrors.TaskNotFoundError
+	if errors.As(err, &notFoundErr) {
+		return nil
+	}
+
+	return err
 }

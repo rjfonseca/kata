@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/urfave/cli/v2"
@@ -9,6 +10,7 @@ import (
 	"github.com/rjfonseca/kata/internal/cmd"
 	"github.com/rjfonseca/kata/internal/i18n"
 	"github.com/rjfonseca/kata/internal/state"
+	"github.com/rjfonseca/kata/internal/taskrunner"
 )
 
 func nextCommand(translator i18n.Translator) *cli.Command {
@@ -26,7 +28,12 @@ func nextCommand(translator i18n.Translator) *cli.Command {
 				return errors.New(translator.T("next.error_not_started"))
 			}
 
-			return cmd.Next(root, stateRepo, translator)
+			runner, err := taskrunner.New(root)
+			if err != nil {
+				return fmt.Errorf("%s: %w", translator.T("run.error_create_executor"), err)
+			}
+
+			return cmd.Next(root, stateRepo, runner, translator)
 		},
 	}
 }

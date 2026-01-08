@@ -14,6 +14,11 @@ func Run(stateRepo *state.Repository, runner taskrunner.Runner, translator i18n.
 		return err
 	}
 
+	// Hook: pre_run_hook
+	if hookErr := runner.RunOptional("pre_run_hook"); hookErr != nil {
+		return fmt.Errorf("pre_run_hook failed: %w", hookErr)
+	}
+
 	err = runner.Run("test")
 	st.MarkRunResult(err == nil)
 
@@ -22,7 +27,16 @@ func Run(stateRepo *state.Repository, runner taskrunner.Runner, translator i18n.
 	}
 
 	if err != nil {
+		// Hook: on_failure_hook
+		if hookErr := runner.RunOptional("on_failure_hook"); hookErr != nil {
+			return fmt.Errorf("on_failure_hook failed: %w", hookErr)
+		}
 		return fmt.Errorf("%s: %w", translator.T("run.error_run_task"), err)
+	}
+
+	// Hook: on_success_hook
+	if hookErr := runner.RunOptional("on_success_hook"); hookErr != nil {
+		return fmt.Errorf("on_success_hook failed: %w", hookErr)
 	}
 
 	return nil

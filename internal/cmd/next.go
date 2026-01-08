@@ -10,9 +10,10 @@ import (
 	"github.com/rjfonseca/kata/internal/i18n"
 	"github.com/rjfonseca/kata/internal/scaffold"
 	"github.com/rjfonseca/kata/internal/state"
+	"github.com/rjfonseca/kata/internal/taskrunner"
 )
 
-func Next(root string, stateRepo *state.Repository, translator i18n.Translator) error {
+func Next(root string, stateRepo *state.Repository, runner taskrunner.Runner, translator i18n.Translator) error {
 	s, err := stateRepo.Load()
 	if err != nil {
 		return err
@@ -68,7 +69,17 @@ func Next(root string, stateRepo *state.Repository, translator i18n.Translator) 
 			translator.T("next.log_completed"),
 			"kata", s.KataName,
 		)
-		return stateRepo.Save(s)
+
+		if err := stateRepo.Save(s); err != nil {
+			return err
+		}
+
+		// Hook: on_kata_finish_hook
+		if hookErr := runner.RunOptional("on_kata_finish_hook"); hookErr != nil {
+			return fmt.Errorf("on_kata_finish_hook failed: %w", hookErr)
+		}
+
+		return nil
 	}
 
 	// Case 4: kata already completed

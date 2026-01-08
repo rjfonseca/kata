@@ -41,7 +41,7 @@ func runCommand(translator i18n.Translator) *cli.Command {
 					return cmd.Run(stateRepo, runner, translator)
 				},
 				Next: func() error {
-					return cmd.Next(root, stateRepo, translator)
+					return cmd.Next(root, stateRepo, runner, translator)
 				},
 			})
 		},

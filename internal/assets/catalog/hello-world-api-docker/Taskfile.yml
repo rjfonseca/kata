@@ -1,0 +1,11 @@
+version: '3'
+
+includes:
+  runner:
+    taskfile: ./Taskfile.testrunner.yml
+    internal: true
+
+tasks:
+  on_start_hook:
+    cmds:
+      - docker compose up -d

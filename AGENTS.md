@@ -214,3 +214,28 @@ In return, agents are expected to:
 - respect ownership boundaries
 - avoid inference and heuristics
 - operate only through supported interfaces
+
+---
+
+## Development Guidelines
+
+### Testing
+
+The project contains intentional broken code (kata scaffolds) in `internal/assets/catalog`.
+To run tests, you **must** use the provided task which filters these out:
+
+```bash
+task test
+```
+
+Do not run `go test ./...` directly, as it will fail on the kata scaffolds.
+
+### Linting
+
+To run the linter:
+
+```bash
+task lint
+```
+
+Ensure `golangci-lint` is installed. The lint task handles exclusions for kata scaffolds.
