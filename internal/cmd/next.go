@@ -26,6 +26,12 @@ func Next(root string, stateRepo *state.Repository, translator i18n.Translator) 
 	// Case 2: there is a next step to advance to
 	if s.HasNextStep() {
 		if err := s.Next(); err != nil {
+			if errors.Is(err, state.ErrTestsFailing) {
+				return errors.New(translator.T("next.error_tests_failing"))
+			}
+			if errors.Is(err, state.ErrNoNextStep) {
+				return errors.New(translator.T("next.error_no_next_step"))
+			}
 			return err
 		}
 
@@ -38,8 +44,9 @@ func Next(root string, stateRepo *state.Repository, translator i18n.Translator) 
 		}
 
 		copier := &scaffold.Copier{
-			Root:     root,
-			Manifest: manifest,
+			Root:       root,
+			Manifest:   manifest,
+			Translator: translator,
 		}
 
 		stepDir := filepath.Join(

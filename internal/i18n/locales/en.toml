@@ -62,7 +62,13 @@ error_run_task = "running task 'test'"
 usage = "Advance the kata to the next step"
 error_not_started = "No kata started. Run 'kata start <name>' first."
 error_tests_failing = "Tests are failing. Make them pass before advancing."
+error_no_next_step = "There are no more steps in this kata."
 error_apply_step = "Failed to apply step '%s'"
 log_advancing = "Advancing to next step"
 log_completed = "Kata completed! 🎉"
 log_already_completed = "Kata already completed! You can keep refactoring and learning."
+
+# --- Copier ---
+[copier]
+error_overwrite = "Refusing to overwrite user-managed file"
+error_modified = "File modified by user"

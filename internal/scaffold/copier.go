@@ -2,13 +2,15 @@ package scaffold
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/rjfonseca/kata/internal/i18n"
 )
 
 // TemplateData holds the data that can be passed to templates for rendering.
@@ -22,6 +24,7 @@ type Copier struct {
 	Root         string
 	Manifest     *Manifest
 	TemplateData TemplateData
+	Translator   i18n.Translator
 }
 
 // Apply copies all files from the root of src into the project root.
@@ -122,7 +125,7 @@ func (c *Copier) copyFile(src fs.FS, srcPath, dstPath, sourceLabel string) error
 func (c *Copier) handleOverwrite(src fs.FS, srcPath, dstPath, sourceLabel string) error {
 	entry, known := c.Manifest.Files[dstPath]
 	if !known {
-		return errors.New("refusing to overwrite user-managed file: " + dstPath)
+		return fmt.Errorf("%s: %s", c.Translator.T("copier.error_overwrite"), dstPath)
 	}
 
 	current, err := ChecksumFile(dstPath)
@@ -131,7 +134,7 @@ func (c *Copier) handleOverwrite(src fs.FS, srcPath, dstPath, sourceLabel string
 	}
 
 	if current != entry.Checksum {
-		return errors.New("file modified by user: " + dstPath)
+		return fmt.Errorf("%s: %s", c.Translator.T("copier.error_modified"), dstPath)
 	}
 
 	// If it was a template, render and overwrite

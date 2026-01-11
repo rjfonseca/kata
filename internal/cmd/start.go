@@ -166,6 +166,7 @@ func Start(root string, stateRepo *state.Repository, kataName string, f StartFla
 		Root:         root,
 		Manifest:     manifest,
 		TemplateData: scaffold.TemplateData{KataName: kataName},
+		Translator:   translator,
 	}
 
 	// ------------------------------------------------------------------

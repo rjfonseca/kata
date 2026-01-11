@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/urfave/cli/v2"
@@ -55,7 +56,7 @@ func startCommand(translator i18n.Translator) *cli.Command {
 				}
 
 				if len(katas) == 0 {
-					fmt.Println(translator.T("start.log_no_katas_found"))
+					slog.Info(translator.T("start.log_no_katas_found"))
 					return nil
 				}
 

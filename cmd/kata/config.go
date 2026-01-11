@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log/slog"
 
 	"github.com/urfave/cli/v2"
@@ -40,7 +39,7 @@ func configCommand(translator i18n.Translator) *cli.Command {
 				return nil
 			}
 
-			fmt.Printf("ui.lang = %s\n", cfg.UI.Lang)
+			slog.Debug("Configuration", "ui.lang", cfg.UI.Lang)
 			return nil
 		},
 	}

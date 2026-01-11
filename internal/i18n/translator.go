@@ -2,6 +2,7 @@ package i18n
 
 import (
 	"fmt"
+	"log/slog"
 
 	"golang.org/x/text/language"
 )
@@ -63,7 +64,7 @@ func NewDefaultTranslator(loader MessageLoader, preferredLangs ...language.Tag) 
 	// Load messages for the matched language
 	currentMsgs, err := loader.Load(langTag)
 	if err != nil {
-		fmt.Printf("Warning: Could not load messages for language %s, using fallback. Error: %v\n", langTag, err)
+		slog.Warn("Could not load messages, using fallback", "lang", langTag, "error", err)
 	}
 
 	currentMap := make(map[string]string)
