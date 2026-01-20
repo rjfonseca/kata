@@ -14,6 +14,7 @@ import (
 func Init(root string, translator i18n.Translator) error {
 	katasDir := filepath.Join(root, "katas")
 	catalogDir := filepath.Join(katasDir, "catalog")
+	scaffoldDir := filepath.Join(katasDir, "scaffold")
 	runnersDir := filepath.Join(katasDir, "runners")
 	i18nDir := filepath.Join(katasDir, "i18n")
 
@@ -28,6 +29,11 @@ func Init(root string, translator i18n.Translator) error {
 
 	slog.Info(translator.T("init.log_copying_catalog"))
 	if err := fsutil.CopyDir(assets.FS, "catalog", catalogDir); err != nil {
+		return err
+	}
+
+	slog.Info(translator.T("init.log_copying_scaffold"))
+	if err := fsutil.CopyDir(assets.FS, "scaffold", scaffoldDir); err != nil {
 		return err
 	}
 

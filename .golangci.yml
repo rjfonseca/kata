@@ -2,3 +2,4 @@ version: "2"
 run:
   skip-dirs:
     - internal/assets/catalog
+    - internal/assets/scaffold

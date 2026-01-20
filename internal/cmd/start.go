@@ -213,7 +213,7 @@ func Start(workspaceRoot, projectRoot string, stateRepo *state.Repository, kataN
 	// ------------------------------------------------------------------
 
 	// Local global scaffold check (in Workspace Root)
-	localGlobalScaffoldDir := filepath.Join(workspaceRoot, "katas", "catalog", "scaffold")
+	localGlobalScaffoldDir := filepath.Join(workspaceRoot, "katas", "scaffold")
 	var globalScaffoldFS fs.FS
 	var globalScaffoldBasePath string
 
@@ -225,12 +225,12 @@ func Start(workspaceRoot, projectRoot string, stateRepo *state.Repository, kataN
 		// Use embedded global scaffold
 		globalScaffoldFS = assets.FS
 		// Use forward slashes for embed.FS, even on Windows
-		globalScaffoldBasePath = "catalog/scaffold"
+		globalScaffoldBasePath = "scaffold"
 	}
 
 	// Apply it
 	// We need to check if the path exists in the chosen FS.
-	// For embedded, we check if catalog/scaffold exists.
+	// For embedded, we check if scaffold exists.
 	// For local, we already checked directory existence.
 	shouldApplyGlobal := true
 	if _, err := fs.Stat(globalScaffoldFS, globalScaffoldBasePath); err != nil {
