@@ -81,7 +81,7 @@ func findUsedKeys(root string) (map[string]bool, error) {
 			if strings.HasPrefix(info.Name(), ".") && info.Name() != "." {
 				return filepath.SkipDir // Skip hidden dirs like .git
 			}
-			if path == "internal/assets/catalog" || path == "internal/assets/scaffold" {
+			if path == "internal/assets/catalog" {
 				return filepath.SkipDir
 			}
 			return nil
