@@ -1,7 +1,12 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
 tasks:
   test:
-    desc: Runs Go tests for the kata
+    internal: true
+    silent: true
+    set:
+      - pipefail
     cmds:
-      - go test $(go list ./... | grep -v katas/catalog)
+      - mkdir -p .kata
+      - go test ./... 2>&1 | tee .kata/last_run.log

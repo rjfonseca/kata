@@ -104,7 +104,7 @@ During execution, Kata creates a local working directory:
 .kata/
 ├── current_state.json
 ├── manifest.json
-└── last_test.log
+└── last_run.log
 ```
 
 The .kata/ directory contains execution state and logs and must not be committed.
@@ -156,7 +156,7 @@ This command:
 
 - streams test output directly to the terminal
 - updates the kata state based on the test result
-- stores the last execution log in .kata/last_test.log
+- stores the last execution log in `.kata/last_run.log`
 
 Exit codes are propagated correctly, making the command suitable for CI pipelines and automation.
 

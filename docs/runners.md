@@ -64,6 +64,8 @@ Optional files may include:
 
 ## The Taskfile
 
+Runners are executed by an embed [Taskfile](https://taskfile.dev/docs/guide).
+
 ### Taskfile Name
 
 Runners must define their execution logic in:
@@ -85,6 +87,8 @@ version: '3'
 
 tasks:
   test:
+    silent: true   # Don't echo commands being executed
+    internal: true # Don't show task on lists
     cmds:
       - echo "running tests"
 ```
@@ -115,7 +119,7 @@ set:
 tasks:
   test:
     cmds:
-      - run-tests | tee .kata/last_test.log
+      - run-tests | tee .kata/last_run.log
 ```
 
 Without `pipefail`, failing tests may incorrectly return exit code `0`.
@@ -125,7 +129,7 @@ Without `pipefail`, failing tests may incorrectly return exit code `0`.
 Runners should:
 
 - stream logs directly to stdout/stderr
-- optionally store logs in `.kata/last_test.log`
+- optionally store logs in `.kata/last_run.log`
 
 This enables:
 

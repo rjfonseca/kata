@@ -28,26 +28,9 @@ func availableActions(s *state.State, tasks []taskrunner.TaskInfo) []huh.Option[
 	opts = append(opts, huh.NewOption("Run tests", ActionRun))
 
 	for _, t := range tasks {
-		if isHiddenTask(t.Name) {
-			continue
-		}
 		opts = append(opts, huh.NewOption("Task: "+t.Name, ActionTask(t.Name)))
 	}
 
 	opts = append(opts, huh.NewOption("Exit", ActionExit))
 	return opts
-}
-
-func isHiddenTask(name string) bool {
-	ignored := map[string]bool{
-		"test":           true,
-		"runner:test":    true,
-		"on_kata_start":  true,
-		"before_run":     true,
-		"on_run":         true,
-		"on_run_success": true,
-		"on_run_fail":    true,
-		"on_kata_finish": true,
-	}
-	return ignored[name]
 }

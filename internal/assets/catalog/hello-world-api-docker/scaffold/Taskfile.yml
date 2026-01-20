@@ -7,6 +7,7 @@ includes:
 
 tasks:
   test:
-    desc: Run acceptance tests
+    internal: true
+    silent: true
     cmds:
       - task: testrunner:test

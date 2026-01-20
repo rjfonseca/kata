@@ -1,9 +1,11 @@
-version: '3'
+version: "3"
 
 includes:
-  runner: ./Taskfile.testrunner.yml
+  testrunner: ./Taskfile.testrunner.yml
 
 tasks:
   test:
+    internal: true
+    silent: true
     cmds:
-      - task: runner:test
+      - task: testrunner:test

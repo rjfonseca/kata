@@ -1,7 +1,12 @@
-version: '3'
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
 
 tasks:
   test:
-    desc: Runs Python doctests
+    internal: true
+    silent: true
+    set:
+      - pipefail
     cmds:
-      - PYTHONPATH=src python3 -m doctest -v src/*_test.py
+      - mkdir -p .kata
+      - PYTHONPATH=src python3 -m doctest -v src/*_test.py 2>&1 | tee .kata/last_run.log

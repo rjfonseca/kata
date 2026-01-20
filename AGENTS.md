@@ -71,11 +71,11 @@ Expected behavior:
 - executes `task test`
 - streams logs to stdout/stderr
 - updates `.kata/current_state.json`
-- writes `.kata/last_test.log`
+- writes `.kata/last_run.log`
 
 Agents should:
 - rely on the exit code to determine success or failure
-- consult `.kata/last_test.log` for diagnostics if tests fail
+- consult `.kata/last_run.log` for diagnostics if tests fail
 
 Agents **must not** parse or interpret test output beyond failure context.
 
@@ -136,7 +136,7 @@ Agents should rely on:
 
 - command exit codes
 - explicit error messages
-- .kata/last_test.log
+- reading file `.kata/last_run.log`
 
 Agents must not:
 
