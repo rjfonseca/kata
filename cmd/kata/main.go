@@ -40,6 +40,7 @@ func main() {
 	// --- CLI App Definition ---
 	app := &cli.App{
 		Name:                 "kata",
+		Version:              version,
 		Usage:                translator.T("cli.usage"),
 		EnableBashCompletion: true,
 		Flags: []cli.Flag{
@@ -87,6 +88,7 @@ func main() {
 			statusCommand(translator),
 			completionCommand(translator),
 			taskCommand(translator),
+			updateCommand(translator),
 		},
 	}
 
