@@ -93,7 +93,7 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.running = false
 		m.err = msg.err
 		m.st, _ = m.opts.LoadState()
-		
+
 		m.msg = statusMessage(m.st)
 		// If command failed but state says passing, it might be a real error
 		if m.err != nil && m.st.TestPassing {
