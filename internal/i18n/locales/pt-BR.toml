@@ -113,3 +113,17 @@ log_restoring = "Restaurando checkpoint: %s"
 log_reset_complete = "Reset concluído. Passo atual: %s"
 error_checkpoint_not_found = "Checkpoint para o passo '%s' não encontrado. Você pode precisar avançar uma vez para criá-lo."
 error_invalid_step = "Índice de passo inválido"
+
+# --- Comando Update ---
+[update]
+usage = "Atualiza o kata CLI para a versão mais recente"
+log_checking = "Procurando por atualizações..."
+log_already_latest = "Você já está usando a versão mais recente: %s"
+log_update_found = "Nova versão %s encontrada!"
+log_updating = "Atualizando para %s..."
+log_success = "Atualizado com sucesso para a versão %s"
+error_check_failed = "Falha ao verificar atualizações"
+error_update_failed = "Falha ao atualizar o binário"
+error_parse_version = "Falha ao analisar a versão atual: %s"
+error_locate_executable = "Falha ao localizar o executável"
+log_dev_build = "Ignorando verificação de atualização para build de desenvolvimento"

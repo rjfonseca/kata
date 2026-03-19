@@ -16,7 +16,7 @@ func updateCommand(translator i18n.Translator) *cli.Command {
 		Usage: translator.T("update.usage"),
 		Action: func(c *cli.Context) error {
 			if version == "dev" {
-				slog.Info(translator.T("update.error_dev_build"))
+				slog.Info(translator.T("update.log_dev_build"))
 				return nil
 			}
 
@@ -33,11 +33,10 @@ func updateCommand(translator i18n.Translator) *cli.Command {
 				return nil
 			}
 
-			v, err := semver.Parse(version)
+			v, err := semver.ParseTolerant(version)
 			if err != nil {
-				// If current version is not semver, we assume it's older or broken, but usually we just log error
-				slog.Warn("failed to parse current version", "version", version, "error", err)
-				// Proceeding might be risky if version is completely wrong, but let's try strict check
+				slog.Error(translator.T("update.error_parse_version", version), "error", err)
+				return cli.Exit(translator.T("update.error_parse_version", version), 1)
 			}
 
 			if latest.Version.LE(v) {
@@ -50,8 +49,8 @@ func updateCommand(translator i18n.Translator) *cli.Command {
 
 			exe, err := os.Executable()
 			if err != nil {
-				slog.Error("failed to locate executable", "error", err)
-				return cli.Exit(translator.T("update.error_update_failed"), 1)
+				slog.Error(translator.T("update.error_locate_executable"), "error", err)
+				return cli.Exit(translator.T("update.error_locate_executable"), 1)
 			}
 
 			if err := selfupdate.UpdateTo(latest.AssetURL, exe); err != nil {

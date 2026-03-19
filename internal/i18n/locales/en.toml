@@ -129,5 +129,7 @@ log_updating = "Updating to %s..."
 log_success = "Successfully updated to version %s"
 error_check_failed = "Failed to check for updates"
 error_update_failed = "Failed to update binary"
-error_dev_build = "Skipping update check for development build"
+error_parse_version = "Failed to parse current version: %s"
+error_locate_executable = "Failed to locate executable"
+log_dev_build = "Skipping update check for development build"
 
