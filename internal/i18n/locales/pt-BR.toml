@@ -87,12 +87,12 @@ error_list_tasks = "falha ao listar tarefas"
 usage = "Gera script de autocompletar para shell"
 args_usage = "[bash|zsh|fish]"
 
-# --- Comando List ---
+# --- List Command ---
 [list]
 usage = "Lista os katas disponíveis"
 error_fetch = "falha ao listar katas"
 
-# --- Comando Status ---
+# --- Status Command ---
 [status]
 usage = "Mostra o status atual do kata"
 error_read_state = "Falha ao ler o estado do kata (um kata foi iniciado?)"
@@ -125,4 +125,5 @@ log_success = "Atualizado com sucesso para a versão %s"
 error_check_failed = "Falha ao verificar atualizações"
 error_update_failed = "Falha ao atualizar o binário"
 error_parse_version = "Falha ao analisar a versão atual: %s"
+error_locate_executable = "Falha ao localizar o executável"
 log_dev_build = "Ignorando verificação de atualização para build de desenvolvimento"
