@@ -23,9 +23,8 @@ func New(root string) (*TaskRunner, error) {
 		return nil, fmt.Errorf("creating Taskfile executor: %w", err)
 	}
 	return &TaskRunner{
-			executor: e,
-		},
-		nil
+		executor: e,
+	}, nil
 }
 
 // Run executes a task by name.

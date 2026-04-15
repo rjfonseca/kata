@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 
@@ -24,8 +25,7 @@ func updateCommand(translator i18n.Translator) *cli.Command {
 
 			latest, found, err := selfupdate.DetectLatest("rjfonseca/kata")
 			if err != nil {
-				slog.Error(translator.T("update.error_check_failed"), "error", err)
-				return cli.Exit(translator.T("update.error_check_failed"), 1)
+				return fmt.Errorf("%s: %w", translator.T("update.error_check_failed"), err)
 			}
 
 			if !found {
@@ -35,8 +35,7 @@ func updateCommand(translator i18n.Translator) *cli.Command {
 
 			v, err := semver.ParseTolerant(version)
 			if err != nil {
-				slog.Error("failed to parse current version", "version", version, "error", err)
-				return cli.Exit(translator.T("update.error_parse_version", version), 1)
+				return fmt.Errorf("%s: %w", translator.T("update.error_parse_version", version), err)
 			}
 
 			if latest.Version.LE(v) {
@@ -49,13 +48,11 @@ func updateCommand(translator i18n.Translator) *cli.Command {
 
 			exe, err := os.Executable()
 			if err != nil {
-				slog.Error("failed to locate executable", "error", err)
-				return cli.Exit(translator.T("update.error_update_failed"), 1)
+				return fmt.Errorf("%s: %w", translator.T("update.error_locate_executable"), err)
 			}
 
 			if err := selfupdate.UpdateTo(latest.AssetURL, exe); err != nil {
-				slog.Error(translator.T("update.error_update_failed"), "error", err)
-				return cli.Exit(translator.T("update.error_update_failed"), 1)
+				return fmt.Errorf("%s: %w", translator.T("update.error_update_failed"), err)
 			}
 
 			slog.Info(translator.T("update.log_success", latest.Version.String()))
