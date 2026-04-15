@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -19,7 +18,8 @@ func Init(root string, translator i18n.Translator) error {
 	i18nDir := filepath.Join(katasDir, "i18n")
 
 	if _, err := os.Stat(katasDir); err == nil {
-		return errors.New(translator.T("init.error_dir_exists"))
+		slog.Info(translator.T("init.log_dir_exists"))
+		return nil
 	}
 
 	slog.Info(translator.T("init.log_creating_dir"), "path", katasDir)

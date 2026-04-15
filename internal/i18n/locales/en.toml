@@ -22,7 +22,7 @@ log_copying_runners = "Copying embedded runners"
 log_copying_i18n = "Copying embedded i18n files"
 log_creating_config = "Creating workspace configuration (kata.toml)"
 log_repo_initialized = "Kata repository initialized"
-error_dir_exists = "Katas directory already exists"
+log_dir_exists = "Katas directory already exists, initialization skipped"
 
 # --- Start Command ---
 [start]
